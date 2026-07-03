@@ -187,3 +187,69 @@ print(tool.run("hello"))
 - It allows resuming from a node after failure or interruption.
 - It improves reliability in multi-step or long-running pipelines.
 - Use checkpoints for retry, debugging, and auditability.
+
+## Advanced LangGraph Interview Questions
+
+### Question 9: How do you model decision logic in LangGraph?
+
+**Answer:**
+- Decision logic is modeled as conditional edges or branching nodes.
+- Each node can evaluate data or model output and direct flow to the next appropriate node.
+- This makes the graph expressive for business rules, fallback handling, and multi-path workflows.
+- Good models separate decision conditions from action nodes to keep the graph maintainable.
+
+### Question 10: How does LangGraph support retries and error recovery?
+
+**Answer:**
+- You can attach retry loops or error-handling branches to nodes.
+- Failed nodes can transition to retry nodes, fallback nodes, or terminal error states.
+- This explicit wiring allows you to control retries, backoff, and escalation.
+- It is important for robust production workflows when external services may fail.
+
+### Question 11: What is the value of explicit state in LangGraph?
+
+**Answer:**
+- Explicit state makes it clear what data flows between nodes and how the workflow progresses.
+- It enables observability, debugging, and auditability of each transition.
+- State can include input payloads, intermediate results, and control flags.
+- Explicit state also makes pausing, resuming, and replaying flows easier.
+
+### Question 12: What are common patterns for composing LangGraph workflows?
+
+**Answer:**
+- Use subgraphs or reusable node groups for repeated logic like validation, retrieval, or generation.
+- Separate orchestration from task logic by using nodes as wrappers around external services.
+- Prefer declarative graph definitions over hard-coded control flow.
+- Use conditional edges for business decisions and parallel branches for concurrent tasks.
+
+### Question 13: How do you design LangGraph for long-running tasks?
+
+**Answer:**
+- Use checkpoint nodes to persist progress after each significant step.
+- Keep nodes idempotent so retries do not duplicate side effects.
+- Store state externally if the workflow must survive process restarts.
+- Add timeout and compensation branches for tasks that may stall or partially complete.
+
+### Question 14: How does LangGraph interact with agents and tools?
+
+**Answer:**
+- Nodes can invoke agents or tool wrappers as part of the graph execution.
+- The graph provides structure while agents handle open-ended decisions or external actions.
+- This allows a hybrid design combining deterministic orchestration with flexible AI-driven steps.
+- It also helps keep tool use auditable and constrained by the workflow.
+
+### Question 15: What observability features are important for LangGraph?
+
+**Answer:**
+- Node execution logs, transition events, and current state visibility are essential.
+- Metrics for node duration, success/failure rates, and retry counts help detect bottlenecks.
+- Tracing graph paths and capturing input/output per node enables troubleshooting.
+- Good observability makes it easier to tune complex flows and respond to production issues.
+
+### Question 16: When would you choose LangGraph over a serverless function pipeline?
+
+**Answer:**
+- Choose LangGraph when the workflow requires explicit branching, conditional retries, or human-in-the-loop handoffs.
+- It is better for stateful orchestration than a simple serverless sequence of functions.
+- LangGraph is preferred if you need a visual workflow model, audit trail, or resumable execution.
+- For simple one-way pipelines, serverless functions may still be sufficient and lower overhead.

@@ -180,3 +180,85 @@ print(build_rag_prompt("What is RAG?", ["RAG combines retrieval and generation."
 - Earlier or later context becomes less influential in the final output.
 - It can happen with long prompt context or many document chunks.
 - Mitigation techniques include reranking, context compression, chunk pruning, and retrieval augmentation.
+
+## Transformer, Fine-tuning, and RAG Interview Questions
+
+### Question 1: What is the Transformer architecture and why is it important?
+
+**Answer:**
+- Transformer is a neural architecture built around self-attention, which computes relationships between all input tokens in parallel.
+- It replaces recurrence and convolutions, enabling much better scaling for long-range dependencies.
+- Transformers are the foundation for modern language models because they support pretraining on massive corpora and efficient fine-tuning.
+- Key components are multi-head attention, feed-forward networks, residual connections, and layer normalization.
+
+### Question 2: How do encoder-only, decoder-only, and encoder-decoder Transformers differ?
+
+**Answer:**
+- Encoder-only models like BERT process the full input bidirectionally and are best for understanding tasks such as classification and extraction.
+- Decoder-only models like GPT generate text autoregressively, predicting the next token from left-to-right context.
+- Encoder-decoder models like T5 and BART use an encoder to build a representation of the source and a decoder to generate output, making them ideal for sequence-to-sequence tasks like translation and summarization.
+
+### Question 3: What role does positional encoding play in Transformers?
+
+**Answer:**
+- Since self-attention has no inherent notion of token order, positional encoding injects sequence position information into token embeddings.
+- Common options are sinusoidal encodings and learned position embeddings.
+- Positional encoding allows the model to distinguish "first word" from "last word" and capture relative order.
+- For long sequences, relative positional encodings or rotary embeddings can improve generalization.
+
+### Question 4: Explain the encoder-decoder attention mechanism.
+
+**Answer:**
+- In encoder-decoder models, the decoder attends to encoder outputs using cross-attention.
+- The decoder's queries come from earlier decoder layers, while keys and values come from encoded source representations.
+- This allows the generated output to condition on the full source context.
+- Cross-attention is what makes translation, summarization, and RAG-style generation work effectively.
+
+### Question 5: What are the main fine-tuning strategies for large language models?
+
+**Answer:**
+- Full fine-tuning updates all model parameters and is simple but expensive in memory and compute.
+- Head-only fine-tuning changes only the task-specific output layer, which is efficient but may underfit.
+- Parameter-efficient methods like LoRA, adapters, and prompt tuning keep most weights frozen and learn a small set of extra parameters.
+- Choice depends on model size, dataset size, deployment constraints, and whether you need to preserve the base model for multiple tasks.
+
+### Question 6: How does Retrieval-Augmented Generation (RAG) use embeddings?
+
+**Answer:**
+- RAG uses embeddings to encode documents and queries into the same vector space for semantic search.
+- A retriever finds the most relevant documents based on embedding similarity.
+- Those retrieved chunks are then passed to a generator for answer synthesis.
+- Embeddings make RAG robust to paraphrasing and allow it to fetch domain-specific knowledge beyond the model's weights.
+
+### Question 7: What differences exist between embedding models and generation models?
+
+**Answer:**
+- Embedding models are optimized to produce dense vector representations for similarity, retrieval, classification, or clustering.
+- Generation models are optimized to produce fluent token sequences for text completion, conversation, or summarization.
+- Embedding models usually output a fixed-length vector, while generation models output token probabilities over a vocabulary.
+- In a RAG pipeline, embedding models are used for retrieval and generation models are used for response construction.
+
+### Question 8: Which hyperparameters matter most when training or fine-tuning Transformers?
+
+**Answer:**
+- Learning rate is the single most important hyperparameter; too high causes divergence and too low slows learning.
+- Batch size affects optimization stability and generalization; larger batches often need learning rate scaling.
+- Sequence length determines context capacity and memory usage.
+- Model depth, number of attention heads, hidden dimension, and dropout control model capacity and regularization.
+- Warmup steps, weight decay, and gradient clipping are also critical in practice.
+
+### Question 9: How should you choose a learning rate schedule for Transformer fine-tuning?
+
+**Answer:**
+- Use a small initial learning rate because pretrained models can be sensitive to large updates.
+- A linear warmup followed by cosine or linear decay is a common pattern.
+- Warmup helps the optimizer stabilize before reaching the target rate.
+- For small datasets, shorter training with early stopping is safer than aggressive schedules.
+
+### Question 10: What common issues arise with RAG and how do you mitigate them?
+
+**Answer:**
+- Hallucination: use better retriever quality, evidence grounding, and prompt constraints.
+- Irrelevant retrieval: improve embeddings, tune similarity thresholds, or add re-ranking.
+- Context window overflow: chunk documents and limit retrieved tokens.
+- Refreshing stale knowledge: update the retriever corpus and re-embed documents regularly.

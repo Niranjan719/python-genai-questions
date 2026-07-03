@@ -284,5 +284,211 @@ def count_sub(s, sub):
     return cnt
 ```
 
+32) Merge intervals (list of [start,end])
+```python
+def merge_intervals(intervals):
+    if not intervals: return []
+    intervals.sort()
+    res=[intervals[0]]
+    for s,e in intervals[1:]:
+        last_s,last_e=res[-1]
+        if s<=last_e: res[-1][1]=max(last_e,e)
+        else: res.append([s,e])
+    return res
+```
+
+33) Validate BST (inorder)
+```python
+def is_bst(root):
+    prev=[None]
+    def dfs(n):
+        if not n: return True
+        if not dfs(n.left): return False
+        if prev[0] is not None and n.val<=prev[0]: return False
+        prev[0]=n.val
+        return dfs(n.right)
+    return dfs(root)
+```
+
+34) Find LCA in BST
+```python
+def lca_bst(root,p,q):
+    node=root
+    while node:
+        if p.val<node.val and q.val<node.val: node=node.left
+        elif p.val>node.val and q.val>node.val: node=node.right
+        else: return node
+```
+
+35) Count islands in grid (DFS)
+```python
+def num_islands(grid):
+    if not grid: return 0
+    m,n=len(grid),len(grid[0])
+    def dfs(i,j):
+        if i<0 or j<0 or i>=m or j>=n or grid[i][j]=='0': return
+        grid[i][j]='0'
+        for di,dj in [(1,0),(-1,0),(0,1),(0,-1)]: dfs(i+di,j+dj)
+    cnt=0
+    for i in range(m):
+        for j in range(n):
+            if grid[i][j]=='1': cnt+=1; dfs(i,j)
+    return cnt
+```
+
+36) Check power of three
+```python
+def is_pow3(n):
+    if n<1: return False
+    while n%3==0: n//=3
+    return n==1
+```
+
+37) Zigzag conversion (string)
+```python
+def zigzag(s,rows):
+    if rows==1: return s
+    rails=['']*rows; r=0; step=1
+    for c in s:
+        rails[r]+=c
+        if r==0: step=1
+        if r==rows-1: step=-1
+        r+=step
+    return ''.join(rails)
+```
+
+38) Evaluate RPN
+```python
+def eval_rpn(tokens):
+    st=[]
+    for t in tokens:
+        if t in '+-*/':
+            b=st.pop(); a=st.pop()
+            st.append(int(eval(str(a)+t+str(b))))
+        else: st.append(int(t))
+    return st[0]
+```
+
+39) Count trailing zeros in n! (factorial)
+```python
+def trailing_zeros(n):
+    cnt=0
+    i=5
+    while i<=n:
+        cnt+=n//i; i*=5
+    return cnt
+```
+
+40) Next permutation (in-place)
+```python
+def next_perm(a):
+    n=len(a); i=n-2
+    while i>=0 and a[i]>=a[i+1]: i-=1
+    if i>=0:
+        j=n-1
+        while a[j]<=a[i]: j-=1
+        a[i],a[j]=a[j],a[i]
+    a[i+1:]=reversed(a[i+1:])
+```
+
+41) Serialize binary tree (preorder)
+```python
+def serialize(root):
+    res=[]
+    def dfs(n):
+        if not n: res.append('#'); return
+        res.append(str(n.val)); dfs(n.left); dfs(n.right)
+    dfs(root); return ','.join(res)
+```
+
+42) Deserialize binary tree (preorder)
+```python
+def deserialize(data):
+    vals=iter(data.split(','))
+    def dfs():
+        v=next(vals)
+        if v=='#': return None
+        n=Node(int(v)); n.left=dfs(); n.right=dfs(); return n
+    return dfs()
+```
+
+43) Find duplicates in array (return list)
+```python
+def find_dups(a):
+    seen=set(); dups=[]
+    for x in a:
+        if x in seen and x not in dups: dups.append(x)
+        seen.add(x)
+    return dups
+```
+
+44) Sum of two linked lists (digits reverse order)
+```python
+def add_lists(l1,l2):
+    carry=0; head=tail=None
+    while l1 or l2 or carry:
+        s=carry + (l1.val if l1 else 0) + (l2.val if l2 else 0)
+        carry=s//10; node=ListNode(s%10)
+        if not head: head=node; tail=node
+        else: tail.next=node; tail=node
+        l1=l1.next if l1 else None; l2=l2.next if l2 else None
+    return head
+```
+
+45) Compute GCD (Euclid)
+```python
+def gcd(a,b):
+    while b: a,b=b,a%b
+    return a
+```
+
+46) Rotate matrix 90 degrees in-place (NxN)
+```python
+def rotate_matrix(m):
+    n=len(m)
+    for i in range(n//2):
+        for j in range(i,n-1-i):
+            tmp=m[i][j]
+            m[i][j]=m[n-1-j][i]
+            m[n-1-j][i]=m[n-1-i][n-1-j]
+            m[n-1-i][n-1-j]=m[j][n-1-i]
+            m[j][n-1-i]=tmp
+```
+
+47) Find subarray with given sum (positive nums) - sliding window
+```python
+def subarray_sum(a,target):
+    i=0; cur=0
+    for j,x in enumerate(a):
+        cur+=x
+        while cur>target and i<=j: cur-=a[i]; i+=1
+        if cur==target: return (i,j)
+    return None
+```
+
+48) Product of array except self (no division)
+```python
+def prod_except_self(a):
+    n=len(a); res=[1]*n
+    left=1
+    for i in range(n): res[i]=left; left*=a[i]
+    right=1
+    for i in range(n-1,-1,-1): res[i]*=right; right*=a[i]
+    return res
+```
+
+49) Binary tree max depth
+```python
+def max_depth(root):
+    if not root: return 0
+    return 1+max(max_depth(root.left), max_depth(root.right))
+```
+
+50) Serialize dictionary to query string
+```python
+def to_qs(d):
+    return '&'.join(f"{k}={v}" for k,v in d.items())
+```
+
 ---
-File: `short-handwritten-questions.md` added. Run these snippets locally to practice handwritten answers.
+File extended to 50 short questions.
